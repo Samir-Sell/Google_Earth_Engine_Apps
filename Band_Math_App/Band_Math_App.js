@@ -3,23 +3,113 @@ Map.clear(); // Remove any default UI
 Map.drawingTools().setShown(false) // Remove drawing tools
 
 
-// Define Ott object
-var ottawa = {
-  long: -75.70,
-  lat: 45.41,
-  zoom: 11,
-  geometry: ee.Geometry.Point([-75.70, 45.41]),
-  image: "LANDSAT/LC08/C01/T1/LC08_016028_20200618"
+function prepare_location(){
+  
+  var location_selected = choose_location_selector.getValue()
+  var viz = "";
+  var image = {};
+  
+  if (location_selected == "Ottawa / Gatineau"){
+    image = ee.Image(locations.ottawa.image_tag)
+    Map.setCenter(locations.ottawa.long, locations.ottawa.lat, locations.ottawa.zoom)
+    viz = {bands: ['B4', 'B3', 'B2'], min: 5522, max: 12892}
+  }
+  else if (location_selected == "Toronto"){
+    image = ee.Image(locations.toronto.image_tag)
+    Map.setCenter(locations.toronto.long, locations.toronto.lat, locations.toronto.zoom)
+    viz = {bands: ['B4', 'B3', 'B2'], min: 5522, max: 12892}
+  }
+  else if (location_selected == "Amazon Rainforest"){
+    image = ee.Image(locations.amazon.image_tag)
+    Map.setCenter(locations.amazon.long, locations.amazon.lat, locations.amazon.zoom)
+    viz = {bands: ['B4', 'B3', 'B2'], min: 5522, max: 12000}
+  }
+  else if (location_selected == "The Nile"){
+    image = ee.Image(locations.nile.image_tag)
+    Map.setCenter(locations.nile.long, locations.nile.lat, locations.nile.zoom)
+    viz = {bands: ['B4', 'B3', 'B2'], min: 7789, max: 23027}
+  }
+  
+  
+  
+  var removepreviouslayer = function(name) {
+    var layers = Map.layers();
+    var names = [];
+    layers.forEach(function(lay){
+      var lay_name = lay.getName();
+      names.push(lay_name)
+    var length = names.length;
+    if (length > 0) {
+      var layer_to_remove = layers.get(0);
+      Map.remove(layer_to_remove);
+      }
+    try {
+      if (length > 0) {
+        var second_to_remove = layers.get(0);
+        Map.remove(second_to_remove);
+      }
+    }
+    catch (err){
+      print("No second layer")
+    }
+    
+    })
+    //removelayer end  
+    }
+  removepreviouslayer() // Call the remove previous layer function
+  
+  
+  
+  
+  // Add Layer
+  Map.addLayer(image, viz, "Base RGB Image")
 }
 
-// Zoom to Ott
-Map.setCenter(ottawa.long, ottawa.lat, ottawa.zoom);
+// Define ottawa object
+var locations = {
+  ottawa: {
+    long: -75.70,
+    lat: 45.41,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-75.70, 45.41]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_016028_20200618"
+  },
+  
+  toronto: {
+    long:-79.3889,
+    lat : 43.6519,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-80.2618, 43.9768]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_018030_20160418"
+  },
+  amazon: {
+    long: -63.4580,
+    lat: -3.1437,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-62.7680, -2.7161]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_233062_20170728"
+  },
+  nile: {
+    long: 33.0122,
+    lat: 26.0073,
+    zoom: 11,
+    geometry: ee.Geometry.Point([32.6014, 25.6586]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_174042_20130408"
+  } 
+}
 
-// Load cloudless image of Ott
-var image = ee.Image("LANDSAT/LC08/C01/T1/LC08_016028_20200618")
+
+var image_collection = ee.ImageCollection("LANDSAT/LC08/C01/T1")
+  .filterBounds(locations.nile.geometry)
+  .filterDate("2012-01-01", "2020-01-01")
+  .sort("CLOUD_COVER")
+print(image_collection)
+
 
 // Add true color image to map
-Map.addLayer(image, {bands: ['B4', 'B3', 'B2'], min: 5522, max: 12892}, "Base RGB Image")
+//Map.addLayer(image, {bands: ['B4', 'B3', 'B2'], min: 5522, max: 12892}, "Base RGB Image")
+
+
 
 // Create side panel for band list
 var band_panel = ui.Panel({
@@ -54,6 +144,18 @@ var intro_label = ui.Label({
 // Instructions
 var instructions_label = ui.Label({
   value: "This app allows you to perform band math using operators such as +, -, /, sqrt and ** for exponents. The band codes are in the bottom right of the page. Use the band codes and the operators to calculate indices. Your calculation contains an error if no image appears." 
+})
+
+var choose_location_label = ui.Label({
+  value: "Please choose a location:"
+})
+
+var choose_location_selector = ui.Select({
+  items: ["Ottawa / Gatineau",
+          "Toronto",
+          "Amazon Rainforest",
+          "The Nile"],
+  placeholder: "Select a Location"
 })
 
 // Label for equation
@@ -139,11 +241,18 @@ var indices_selector = ui.Select({
           "Chlorophyll Index Green (CIG)",
           "Wide Dynamic Range Vegetation Index (WDRVI)",
           "Soil Background Line (SBL)",
-          "Modified Soil Adjusted Vegetation Index (MSAVI)"]
+          "Modified Soil Adjusted Vegetation Index (MSAVI)",
+          "Built Up Index (BU)",
+          "Normalized Difference Water Index (NDWI)"],
+          
+          placeholder: "Select an Index"
 })
 
 // Event listener to detect changes in index select menu
 indices_selector.onChange(insert_equation)
+
+// Grab value from location selector box
+choose_location_selector.onChange(prepare_location)
 
 // Function to handle select box change and to load calculation text box
 function insert_equation(){
@@ -177,6 +286,12 @@ function insert_equation(){
   else if (select_value == "Modified Soil Adjusted Vegetation Index (MSAVI)"){
     band_math_calc.setValue("((2*NIR + 1) - sqrt((2*NIR+1)**2 - 8*(NIR - RED))) / 2")
   }
+  else if (select_value == "Built Up Index (BU)"){
+    band_math_calc.setValue("(SWIR1 - NIR) / (SWIR1 + NIR) - ((NIR - RED) / (NIR + RED))")
+  }
+  else if (select_value == "Normalized Difference Water Index (NDWI)"){
+    band_math_calc.setValue("(NIR - SWIR1) / (NIR + SWIR1)")
+  }
 }
 
 
@@ -185,6 +300,11 @@ calculate_button.onClick(do_math)
 
 // Function to perform the math
 function do_math(){
+  
+  var layers = Map.layers()
+  var image = layers.get(0).getEeObject();
+  print(image)
+  
   var expression_value = band_math_calc.getValue()
     var calculation = image.expression(
         expression_value, { // Create dictionary of bands for ease of use
@@ -239,52 +359,55 @@ function do_math(){
        }
        removepreviouslayer() // Call the remove previous layer function
        if (indices_selector.getValue() == "Enhanced Vegetation Index (EVI)"){
-        viz = {palette: change_colors.getValue().split(" "), min: -1, max: 1}
+        viz = {palette: change_colors.getValue().split(" "), min: -1, max: 1};
       }
       // Add layer to map
-      Map.addLayer(calculation, viz, "Band Math Result")
-    })
+      Map.addLayer(calculation, viz, "Band Math Result");
+    });
 //do math end  
 }
 
 // Label for color palette
 var color_label = ui.Label({
   value: "Choose a color palette:"
-})
+});
 
 // Select color options
 var change_colors = ui.Select({
-  items: ["Blue White Green", "Blue White Purple", "Blue White Red",
-    "Green Purple Orange", "Blue White Yellow", "White Orange Green",
-    "Blue Red Green", "White Green", "White Red", "Grey Red", "Grey Green",
+  items: ["Blue White Green", "White Blue Green Orange Red", 
+    "Blue White Purple", "Blue White Red", "Green Purple Orange", 
+    "Blue White Yellow", "White Orange Green", "Blue Red Green", 
+    "White Green", "White Red", "Grey Red", "Grey Green",
     "White Orange Red Pink"],
   value: "Blue White Green"
   
-})
+});
 
 
 // Side Panel UI  
-Map.add(side_panel)
-side_panel.add(intro_label)
-side_panel.add(instructions_label)
-side_panel.add(prompt_equation_label)
-side_panel.add(band_math_calc)
-side_panel.add(calculate_button)
-side_panel.add(preload_label)
-side_panel.add(indices_selector)
-side_panel.add(color_label)
-side_panel.add(change_colors)
+Map.add(side_panel);
+side_panel.add(intro_label);
+side_panel.add(instructions_label);
+side_panel.add(choose_location_label);
+side_panel.add(choose_location_selector);
+side_panel.add(prompt_equation_label);
+side_panel.add(band_math_calc);
+side_panel.add(calculate_button);
+side_panel.add(preload_label);
+side_panel.add(indices_selector);
+side_panel.add(color_label);
+side_panel.add(change_colors);
 
 //  Band Panel UI
-Map.add(band_panel)
-band_panel.add(band1_label)
-band_panel.add(band2_label)
-band_panel.add(band3_label)
-band_panel.add(band4_label)
-band_panel.add(band5_label)
-band_panel.add(band6_label)
-band_panel.add(band7_label)
-band_panel.add(band8_label)
-band_panel.add(band9_label)
-band_panel.add(band10_label)
-band_panel.add(band11_label)
+Map.add(band_panel);
+band_panel.add(band1_label);
+band_panel.add(band2_label);
+band_panel.add(band3_label);
+band_panel.add(band4_label);
+band_panel.add(band5_label);
+band_panel.add(band6_label);
+band_panel.add(band7_label);
+band_panel.add(band8_label);
+band_panel.add(band9_label);
+band_panel.add(band10_label);
+band_panel.add(band11_label);
