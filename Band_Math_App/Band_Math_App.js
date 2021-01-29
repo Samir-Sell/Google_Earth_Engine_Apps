@@ -1,8 +1,19 @@
+// Map setup 
+//---------------------------------------------------------------------
 
+// Remove drawing function, leftover UI and full screen
 Map.clear(); // Remove any default UI
-Map.drawingTools().setShown(false) // Remove drawing tools
+Map.setControlVisibility({
+  fullscreenControl: false,
+  drawingToolsControl: false,
+  mapTypeControl: false
+})
 
 
+// Functions
+//---------------------------------------------------------------------
+
+// Function to load various location 
 function prepare_location(){
   
   var location_selected = choose_location_selector.getValue()
@@ -29,9 +40,13 @@ function prepare_location(){
     Map.setCenter(locations.nile.long, locations.nile.lat, locations.nile.zoom)
     viz = {bands: ['B4', 'B3', 'B2'], min: 7789, max: 23027}
   }
+  else if (location_selected == "Columbia Glacier"){
+    image = ee.Image(locations.glacier.image_tag)
+    Map.setCenter(locations.glacier.long, locations.glacier.lat, locations.glacier.zoom)
+    viz = {bands: ['B4', 'B3', 'B2'], min: -5948, max: 40764}
+  }
   
-  
-  
+  // Function to remove previous layers 
   var removepreviouslayer = function(name) {
     var layers = Map.layers();
     var names = [];
@@ -52,207 +67,12 @@ function prepare_location(){
     catch (err){
       print("No second layer")
     }
-    
     })
-    //removelayer end  
     }
   removepreviouslayer() // Call the remove previous layer function
-  
-  
-  
-  
   // Add Layer
   Map.addLayer(image, viz, "Base RGB Image")
 }
-
-// Define ottawa object
-var locations = {
-  ottawa: {
-    long: -75.70,
-    lat: 45.41,
-    zoom: 11,
-    geometry: ee.Geometry.Point([-75.70, 45.41]),
-    image_tag: "LANDSAT/LC08/C01/T1/LC08_016028_20200618"
-  },
-  
-  toronto: {
-    long:-79.3889,
-    lat : 43.6519,
-    zoom: 11,
-    geometry: ee.Geometry.Point([-80.2618, 43.9768]),
-    image_tag: "LANDSAT/LC08/C01/T1/LC08_018030_20160418"
-  },
-  amazon: {
-    long: -63.4580,
-    lat: -3.1437,
-    zoom: 11,
-    geometry: ee.Geometry.Point([-62.7680, -2.7161]),
-    image_tag: "LANDSAT/LC08/C01/T1/LC08_233062_20170728"
-  },
-  nile: {
-    long: 33.0122,
-    lat: 26.0073,
-    zoom: 11,
-    geometry: ee.Geometry.Point([32.6014, 25.6586]),
-    image_tag: "LANDSAT/LC08/C01/T1/LC08_174042_20130408"
-  } 
-}
-
-
-var image_collection = ee.ImageCollection("LANDSAT/LC08/C01/T1")
-  .filterBounds(locations.nile.geometry)
-  .filterDate("2012-01-01", "2020-01-01")
-  .sort("CLOUD_COVER")
-print(image_collection)
-
-
-// Add true color image to map
-//Map.addLayer(image, {bands: ['B4', 'B3', 'B2'], min: 5522, max: 12892}, "Base RGB Image")
-
-
-
-// Create side panel for band list
-var band_panel = ui.Panel({
-   layout: ui.Panel.Layout.flow('vertical', true),
-   style: {
-      height: '360px',
-      width: '250px',
-      position: "bottom-right"
-    }
-});
-
-// Create Side Panel for Control
-var side_panel = ui.Panel({
-   layout: ui.Panel.Layout.flow('vertical', true),
-   style: {
-     
-      height: '90%',
-      width: '400px',
-      position: "bottom-left"
-    }
-});
-
-// Create title label 
-var intro_label = ui.Label({
-  value: "Landsat-8 Band Math Calculator",
-  style: {
-    stretch: "horizontal",
-    fontWeight: "bold"
-  }
-})
-
-// Instructions
-var instructions_label = ui.Label({
-  value: "This app allows you to perform band math using operators such as +, -, /, sqrt and ** for exponents. The band codes are in the bottom right of the page. Use the band codes and the operators to calculate indices. Your calculation contains an error if no image appears." 
-})
-
-var choose_location_label = ui.Label({
-  value: "Please choose a location:"
-})
-
-var choose_location_selector = ui.Select({
-  items: ["Ottawa / Gatineau",
-          "Toronto",
-          "Amazon Rainforest",
-          "The Nile"],
-  placeholder: "Select a Location"
-})
-
-// Label for equation
-var prompt_equation_label = ui.Label({
-  value: "Please Enter a Valid Equation:"
-})
-
-// Define styles for band list
-var band_list_styles = {
-  fontSize:"12px"
-}
-
-// Define lables
-var band1_label = ui.Label({
-  value: "Band 1 - Coast Aerosol --> 'COAST'",
-  style: band_list_styles
-})
-var band2_label = ui.Label({
-  value: "Band 2 - Blue --> 'BLUE'",
-  style: band_list_styles
-})
-var band3_label = ui.Label({
-  value: "Band 3 - Green --> 'GREEN'",
-  style: band_list_styles
-})
-var band4_label = ui.Label({
-  value: "Band 4 - Red --> 'RED'",
-  style: band_list_styles
-})
-var band5_label = ui.Label({
-  value: "Band 5 - Near Infrared --> 'NIR'",
-  style: band_list_styles
-})
-var band6_label = ui.Label({
-  value: "Band 6 - SWIR 1 --> 'SWIR1'",
-  style: band_list_styles
-})
-var band7_label = ui.Label({
-  value: "Band 7 - SWIR 2 --> 'SWIR2'",
-  style: band_list_styles
-})
-var band8_label = ui.Label({
-  value: "Band 8 - Panchromatic --> 'PAN'",
-  style: band_list_styles
-})
-var band9_label = ui.Label({
-  value: "Band 9 - Cirrus --> 'CIR'",
-  style: band_list_styles
-})
-var band10_label = ui.Label({
-  value: "Band 11 - Thermal Infrared 1 --> 'TIRS1'",
-  style: band_list_styles
-})
-var band11_label = ui.Label({
-  value: "Band 11 - Thermal Infrared 2 --> 'TIRS2'",
-  style: band_list_styles
-})
-
-// Calculate button
-var calculate_button = ui.Button({
-  label: "Calculate",
-  style: {stretch: "horizontal"}
-});
-
-// Band math textbox
-var band_math_calc = ui.Textbox({
-  placeholder: "Enter Band Math Equation",
-  style: {stretch: "horizontal"}
-})
-
-// Preloaded description
-var preload_label = ui.Label({
-  value: "Choose from a list of indices to preload equations:",
-})
-
-// Indices selector to preload
-var indices_selector = ui.Select({
-  items: ["Normalized Difference Vegetation Index (NDVI)", 
-          "Normalized Difference Moisture Index (NDMI)", 
-          "Soil Adjusted Vegetation Index (SAVI)",
-          "Enhanced Vegetation Index (EVI)",
-          "Soil Composition Index (SCI)",
-          "Chlorophyll Index Green (CIG)",
-          "Wide Dynamic Range Vegetation Index (WDRVI)",
-          "Soil Background Line (SBL)",
-          "Modified Soil Adjusted Vegetation Index (MSAVI)",
-          "Built Up Index (BU)",
-          "Normalized Difference Water Index (NDWI)"],
-          
-          placeholder: "Select an Index"
-})
-
-// Event listener to detect changes in index select menu
-indices_selector.onChange(insert_equation)
-
-// Grab value from location selector box
-choose_location_selector.onChange(prepare_location)
 
 // Function to handle select box change and to load calculation text box
 function insert_equation(){
@@ -292,13 +112,12 @@ function insert_equation(){
   else if (select_value == "Normalized Difference Water Index (NDWI)"){
     band_math_calc.setValue("(NIR - SWIR1) / (NIR + SWIR1)")
   }
+  else if (select_value == "Normalized Difference Snow Index (NDSI)"){
+    band_math_calc.setValue("(GREEN - SWIR1) / (GREEN + SWIR1)")
+  }
 }
 
-
-// Logic for band math pull
-calculate_button.onClick(do_math)
-
-// Function to perform the math
+// Function to perform the band math
 function do_math(){
   
   var layers = Map.layers()
@@ -364,8 +183,199 @@ function do_math(){
       // Add layer to map
       Map.addLayer(calculation, viz, "Band Math Result");
     });
-//do math end  
 }
+
+
+// Defining locations and metadata
+//---------------------------------------------------------------------
+var locations = {
+  ottawa: {
+    long: -75.70,
+    lat: 45.41,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-75.70, 45.41]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_016028_20200618"
+  },
+  
+  toronto: {
+    long:-79.3889,
+    lat : 43.6519,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-80.2618, 43.9768]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_018030_20160418"
+  },
+  amazon: {
+    long: -63.4580,
+    lat: -3.1437,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-62.7680, -2.7161]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_233062_20170728"
+  },
+  nile: {
+    long: 33.0122,
+    lat: 26.0073,
+    zoom: 11,
+    geometry: ee.Geometry.Point([32.6014, 25.6586]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_174042_20130408"
+  },
+  glacier: {
+    long: -146.9637,
+    lat: 61.1758,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-146.9637, 61.1758]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_066017_20180323"
+  }
+}
+
+
+var image_collection = ee.ImageCollection("LANDSAT/LC08/C01/T1")
+  .filterBounds(locations.glacier.geometry)
+  .filterDate("2012-01-01", "2020-01-01")
+  .sort("CLOUD_COVER")
+print(image_collection)
+
+
+// Creating UI elements
+//---------------------------------------------------------------------
+
+// Create side panel for band list
+var band_panel = ui.Panel({
+   layout: ui.Panel.Layout.flow('vertical', true),
+   style: {
+      height: '360px',
+      width: '250px',
+      position: "bottom-right"
+    }
+});
+
+// Create Side Panel for Control
+var side_panel = ui.Panel({
+   layout: ui.Panel.Layout.flow('vertical', true),
+   style: {
+      height: '90%',
+      width: '400px',
+      position: "bottom-left"
+    }
+});
+
+// Create title label 
+var intro_label = ui.Label({
+  value: "Landsat-8 Band Math Calculator",
+  style: {
+    stretch: "horizontal",
+    fontWeight: "bold"
+  }
+})
+
+// Instructions
+var instructions_label = ui.Label({
+  value: "This app allows you to perform band math using operators such as +, -, /, sqrt and ** for exponents. The band codes are in the bottom right of the page. Use the band codes and the operators to calculate indices. Your calculation contains an error if no image appears." 
+})
+
+// Location label
+var choose_location_label = ui.Label({
+  value: "Please choose a location:"
+})
+
+// Location Selector
+var choose_location_selector = ui.Select({
+  items: ["Ottawa / Gatineau",
+          "Toronto",
+          "Amazon Rainforest",
+          "The Nile",
+          "Columbia Glacier"],
+  placeholder: "Select a Location"
+})
+
+// Label for equation
+var prompt_equation_label = ui.Label({
+  value: "Please Enter a Valid Equation:"
+})
+
+// Define styles for band list
+var band_list_styles = {
+  fontSize:"12px"
+}
+
+// Define labels
+var band1_label = ui.Label({
+  value: "Band 1 - Coast Aerosol --> 'COAST'",
+  style: band_list_styles
+})
+var band2_label = ui.Label({
+  value: "Band 2 - Blue --> 'BLUE'",
+  style: band_list_styles
+})
+var band3_label = ui.Label({
+  value: "Band 3 - Green --> 'GREEN'",
+  style: band_list_styles
+})
+var band4_label = ui.Label({
+  value: "Band 4 - Red --> 'RED'",
+  style: band_list_styles
+})
+var band5_label = ui.Label({
+  value: "Band 5 - Near Infrared --> 'NIR'",
+  style: band_list_styles
+})
+var band6_label = ui.Label({
+  value: "Band 6 - SWIR 1 --> 'SWIR1'",
+  style: band_list_styles
+})
+var band7_label = ui.Label({
+  value: "Band 7 - SWIR 2 --> 'SWIR2'",
+  style: band_list_styles
+})
+var band8_label = ui.Label({
+  value: "Band 8 - Panchromatic --> 'PAN'",
+  style: band_list_styles
+})
+var band9_label = ui.Label({
+  value: "Band 9 - Cirrus --> 'CIR'",
+  style: band_list_styles
+})
+var band10_label = ui.Label({
+  value: "Band 11 - Thermal Infrared 1 --> 'TIRS1'",
+  style: band_list_styles
+})
+var band11_label = ui.Label({
+  value: "Band 11 - Thermal Infrared 2 --> 'TIRS2'",
+  style: band_list_styles
+})
+
+// Calculate button
+var calculate_button = ui.Button({
+  label: "Calculate",
+  style: {stretch: "horizontal"}
+});
+
+// Band math textbox
+var band_math_calc = ui.Textbox({
+  placeholder: "Enter Band Math Equation",
+  style: {stretch: "horizontal"}
+})
+
+// Preloaded description label
+var preload_label = ui.Label({
+  value: "Choose from a list of indices to preload equations:",
+})
+
+// Indices selector to preload
+var indices_selector = ui.Select({
+  items: ["Normalized Difference Vegetation Index (NDVI)", 
+          "Normalized Difference Moisture Index (NDMI)", 
+          "Soil Adjusted Vegetation Index (SAVI)",
+          "Enhanced Vegetation Index (EVI)",
+          "Soil Composition Index (SCI)",
+          "Chlorophyll Index Green (CIG)",
+          "Wide Dynamic Range Vegetation Index (WDRVI)",
+          "Soil Background Line (SBL)",
+          "Modified Soil Adjusted Vegetation Index (MSAVI)",
+          "Built Up Index (BU)",
+          "Normalized Difference Water Index (NDWI)",
+          "Normalized Difference Snow Index (NDSI)"],
+          placeholder: "Select an Index"
+})
 
 // Label for color palette
 var color_label = ui.Label({
@@ -384,6 +394,21 @@ var change_colors = ui.Select({
 });
 
 
+// Event Listenrs
+//---------------------------------------------------------------------
+
+// Detect changes in index select menu
+indices_selector.onChange(insert_equation)
+
+//Detect changes in location selector box
+choose_location_selector.onChange(prepare_location)
+
+// Logic for band math pull
+calculate_button.onClick(do_math)
+
+// Adding UI Elements
+//---------------------------------------------------------------------
+
 // Side Panel UI  
 Map.add(side_panel);
 side_panel.add(intro_label);
@@ -398,7 +423,7 @@ side_panel.add(indices_selector);
 side_panel.add(color_label);
 side_panel.add(change_colors);
 
-//  Band Panel UI
+// Band Panel UI
 Map.add(band_panel);
 band_panel.add(band1_label);
 band_panel.add(band2_label);
