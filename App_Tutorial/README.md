@@ -23,3 +23,32 @@ The first step is remove some of the default UI to prevent it from interfering w
   mapTypeControl: false // Remove option to change default map imagery
 })
 ```
+
+The next step is to define a global variable which will contain all the information about the various images we want to present to our users. In this example, I have already defined some locations and corresponding imagery. 
+
+```
+var locations = {
+  ottawa: { 
+    long: -75.70,
+    lat: 45.41,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-75.70, 45.41]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_016028_20200618"
+  },
+  
+  toronto: {
+    long:-79.3889,
+    lat : 43.6519,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-80.2618, 43.9768]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_018030_20160418"
+  },
+    glacier: {
+    long: -146.9637,
+    lat: 61.1758,
+    zoom: 11,
+    geometry: ee.Geometry.Point([-146.9637, 61.1758]),
+    image_tag: "LANDSAT/LC08/C01/T1/LC08_066017_20180323"
+  }
+}
+```
