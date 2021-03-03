@@ -94,7 +94,9 @@ We want to now test if our label and panel worked. We have them created as an ob
 //---------------------------------------------------------------------
 
 // Side Panel UI  
-Map.add(side_panel);
+Map.add(side_panel); // Add the side panel to the map
+side_panel.add(intro_label); // Add the intro_label to the side_panel
+
 ```
 
 You should now be able to run your program and see the beginnings of your UI! We will now need to create an instructions label for the app, an instructions label for the imagery selector and the imagery selector itself. Earth Engine has a ui.Select function built in that allows for a drop down menu to be created. 
@@ -183,5 +185,91 @@ function remove_all_layers(){
     }
 }
 ```
+
+To complte the selector box, we just have to add it to the side panel. Navigate to your adding UI elements section and add the following snippet. 
+
+```javascript
+side_panel.add(choose_location_label);
+```
+
+Awesome! Run this and test that it works for you. We have a functional dropdown menu that can allow our users to switch aroud to view different images. We are going to want to add some functionality to our app. In this case, we are going to add some more labels and a textbox that will allow users to write their own band math equations. 
+
+We are going to put the following snippets of code into our UI elements section. We are going to add a description label, a textbox for user input and a button. 
+
+```javascript
+// Label for equation
+var prompt_equation_label = ui.Label({
+  value: "Please Enter a Valid Equation:"
+})
+
+// Band math textbox
+var band_math_calc = ui.Textbox({
+  placeholder: "Enter Band Math Equation",
+  style: {stretch: "horizontal"}
+})
+
+// Calculate button
+var calculate_button = ui.Button({
+  label: "Calculate",
+  style: {stretch: "horizontal"}
+});
+```
+Now we will add these new UI elements onto the display. Navigate to your adding UI elements section and add the below snippet. 
+
+```javascript
+side_panel.add(prompt_equation_label);
+side_panel.add(band_math_calc);
+side_panel.add(calculate_button);
+```
+
+You have just added a new description label, a textbox for user input regarding band math equations and a button that will be used to action a calculation. To make the button do something, we have to add an event listener that will listen for the button being clicked. 
+
+Navigate to your event listner section and add. In the next step, we will be defining the function do_math(). 
+
+```javascript
+calculate_button.onClick(do_math) // Event listener to action a function on detection of a button click. 
+```
+
+The code below will define the function do_math() which will be intended to apply band math to the currently displayed image. Additionally, the function will also have to remove the previous displayed band math layer if there is one. 
+
+```
+// Function to perform the band math
+function do_math(){
+  
+  var layers = Map.layers() // Grab the active layers on the map
+  var image = layers.get(0).getEeObject(); // The image will always be the first layer which has an index of 0. 
+  print(image) 
+  
+  var expression_value = band_math_calc.getValue() // Use .getValue of the textbox to grab the current equation that the textbox contains. 
+    // Create a new calculation image that uses .expression to perform band math. 
+    var calculation = image.expression( 
+        expression_value, { // Create dictionary of bands for ease of use
+          "COAST": image.select("B1"), 
+          "BLUE": image.select("B2"),
+          "GREEN": image.select("B3"),
+          "RED": image.select("B4"),
+          "NIR": image.select("B5"),
+          "SWIR1": image.select("B6"),
+          "SWIR2": image.select("B7"),
+          "PAN": image.select("B8"),
+          "CIR": image.select("B9"),
+          "TIRS1": image.select("B10"),
+          "TIRS2": image.select("B11")
+    });
+    
+   // A function within a function to remove the potential previous band math layers
+   function remove_previous_layers(){
+        if (Map.layers().length() > 0) { // If there is more than one layer on the map, execute this logic
+          var layer = Map.layers().get(1); // Get the map layer with an index of 1
+          Map.layers().remove(layer); // Delete the layer with an index of 1
+        }
+      }
+    
+   // Call function to remove previous band math layer 
+   remove_previous_layers()
+```
+
+
+
 
 
