@@ -16,8 +16,10 @@ I personally found it useful to divide my apps into different sections:
 
 The first step is remove some of the default UI to prevent it from interfering with our UI. 
 
+```
   Map.setControlVisibility({
-  fullscreenControl: false,
-  drawingToolsControl: false,
-  mapTypeControl: false
+  fullscreenControl: false, // Remove full screen option (This breaks the app)
+  drawingToolsControl: false, // Remove drawing controls
+  mapTypeControl: false // Remove option to change default map imagery
 })
+```
