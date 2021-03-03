@@ -16,8 +16,8 @@ I personally found it useful to divide my apps into different sections:
 
 The first step is remove some of the default UI to prevent it from interfering with our UI. 
 
-```
-  Map.setControlVisibility({
+```javascript
+Map.setControlVisibility({
   fullscreenControl: false, // Remove full screen option (This breaks the app)
   drawingToolsControl: false, // Remove drawing controls
   mapTypeControl: false // Remove option to change default map imagery
@@ -26,7 +26,7 @@ The first step is remove some of the default UI to prevent it from interfering w
 
 The next step is to define a global variable which will contain all the information about the various images we want to present to our users. In this example, I have already defined some locations and corresponding imagery. 
 
-```
+```javascript
 var locations = {
   ottawa: { 
     long: -75.70,
@@ -53,13 +53,16 @@ var locations = {
 }
 ```
 
-### Creating UI Elements
+### Creating & Adding UI Elements
 
 The UI Documentation for Earth Engine can be found here under the code editor tab with methods starting with "ui.":https://developers.google.com/earth-engine/apidocs
 
-The first step will be to create a white panel where we can put all of our UI elements. We will use this panel to add things to like textboxes, buttons and drop down menus. 
+The first step will be to create a UI Elements section and a white panel where we can put all of our UI elements. We will use this panel to add things to like textboxes, buttons and drop down menus. 
 
-```
+```javascript
+// Creating UI elements
+//---------------------------------------------------------------------
+
 // Create Side Panel for Control
 var side_panel = ui.Panel({
    layout: ui.Panel.Layout.flow('vertical', true), // Make the elements in the panel flow vertically and to ensure it will wrap text if a text element is too long
@@ -83,3 +86,15 @@ var intro_label = ui.Label({
   }
 })
 ```
+
+We want to now test if our label and panel worked. We have them created as an object, but we want to add these UI objects to the screen so that users can see them. To do this, we will create the "Adding UI Elements" section of our code and then we will add our panel to the map and our label to the panel. When making UI objects in the future, it really helps to assign them super descriptive names. 
+
+```javascript
+// Adding UI Elements
+//---------------------------------------------------------------------
+
+// Side Panel UI  
+Map.add(side_panel);
+```
+
+You should now be able to run your program and see the beginnings of your UI!
