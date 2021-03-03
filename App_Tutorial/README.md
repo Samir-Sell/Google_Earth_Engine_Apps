@@ -131,6 +131,57 @@ We will now add our event listener section.
 //---------------------------------------------------------------------
 
 // Detect changes in location selector box
-choose_location_selector.onChange(prepare_location) //The event listener is applied to our selector box and when triggered will call the function prepare location which we will make next.
+choose_location_selector.onChange(prepare_location) //The event listener is applied to our selector box and when triggered will call the function prepare_location which we will make next.
 ```
+
+Finally, we will create our Funtions section in our code which will start with the prepare_location function we loaded into our selector box event listener. This function will handle the display of imagery to the user. When the user changes the selector box, the image, zoom and location of the map will change. Within this function is another function we have not written yet. It is called remove_all_layers(). This is important to have in our function as we want the previous images to be removed when a user selects a new image. 
+
+```javascript
+// Functions
+//---------------------------------------------------------------------
+
+// Function to load various locations
+function prepare_location(){
+  
+  var location_selected = choose_location_selector.getValue() // We use a .getValue() call to retrieve the value of the selector box
+  
+  // Declaring variables
+  var viz = "";
+  var image = {};
+  
+  // The logic to handle image loading depending on what the location selected in the selector box is
+  if (location_selected == "Ottawa / Gatineau"){ // Check if the location is Ottawa / Gatineau
+    image = ee.Image(locations.ottawa.image_tag) // If the location is Ottawa, assign the image to the Ottawa image ID
+    Map.setCenter(locations.ottawa.long, locations.ottawa.lat, locations.ottawa.zoom) // Use the metadata in locations variable to center the map around.
+    viz = {bands: ['B4', 'B3', 'B2'], min: 5522, max: 12892} // Declare visualization parameters for the image
+  }
+  else if (location_selected == "Toronto"){
+    image = ee.Image(locations.toronto.image_tag)
+    Map.setCenter(locations.toronto.long, locations.toronto.lat, locations.toronto.zoom)
+    viz = {bands: ['B4', 'B3', 'B2'], min: 5522, max: 12892}
+  }
+  else if (location_selected == "Columbia Glacier"){
+    image = ee.Image(locations.glacier.image_tag)
+    Map.setCenter(locations.glacier.long, locations.glacier.lat, locations.glacier.zoom)
+    viz = {bands: ['B4', 'B3', 'B2'], min: -5948, max: 40764}
+  }
+  
+  remove_all_layers() // This is a function call that will be talked about next
+  
+  Map.addLayer(image, viz, "Base RGB Image") // Add the chosen image to the display
+}
+```
+
+We will now write a quick function to remove all the currently displayed layers. We will do this with a while loop that will run until the amount of map layers is 0. 
+
+```javascript
+// Function to remove all layers from the map
+function remove_all_layers(){
+    while (Map.layers().length() > 0) { // Create a while loop that continues while the number of layers on the map is above 0
+      var layer = Map.layers().get(0); // Get the map layer with an index of 0
+      Map.layers().remove(layer); // Delete the layer with an index of 0
+    }
+}
+```
+
 
