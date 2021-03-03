@@ -1,5 +1,6 @@
 # Google Earth Engine Repo
 
+This repository will include the source code for 4 different Google Earth Engine apps. There is also a working / growing folder for Earth Engine functions that can be called into other Earth Engine Scripts. Finally, this repository will also include a basic introduction to building Earth Engine apps.
 
 ## GEE Apps that were created to perform basic remote sensing operations using no code:
 
