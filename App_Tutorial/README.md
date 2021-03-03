@@ -76,7 +76,7 @@ var side_panel = ui.Panel({
 
 Next we create a label which allows us to display text.
 
-```
+```javascript
 // Create title label 
 var intro_label = ui.Label({
   value: "Landsat-8 Band Math Calculator", // This is what the label will display 
@@ -97,4 +97,26 @@ We want to now test if our label and panel worked. We have them created as an ob
 Map.add(side_panel);
 ```
 
-You should now be able to run your program and see the beginnings of your UI!
+You should now be able to run your program and see the beginnings of your UI! We will now need to create an instructions label for the app, an instructions label for the imagery selector and the imagery selector itself. Earth Engine has a ui.Select function built in that allows for a drop down menu to be created. 
+
+
+```javascript
+// Instructions
+var instructions_label = ui.Label({
+  value: "This app allows you to perform band math using operators such as +, -, /, sqrt and ** for exponents. The band codes are in the bottom right of the page. Use the band codes and the operators to calculate indices. Your calculation contains an error if no image appears." 
+})
+
+// Location label
+var choose_location_label = ui.Label({
+  value: "Please choose a location:"
+})
+
+// Location Selector
+var choose_location_selector = ui.Select({
+  items: ["Ottawa / Gatineau", // The items are the options that will be shown to the user
+          "Toronto",
+          "Columbia Glacier"],
+  placeholder: "Select a Location" // This will be the default text displayed to the user 
+})
+```
+
