@@ -194,6 +194,8 @@ side_panel.add(choose_location_label);
 
 Awesome! Run this and test that it works for you. We have a functional dropdown menu that can allow our users to switch aroud to view different images. We are going to want to add some functionality to our app. In this case, we are going to add some more labels and a textbox that will allow users to write their own band math equations. 
 
+### Adding the Functional Band Math Textbox
+
 We are going to put the following snippets of code into our UI elements section. We are going to add a description label, a textbox for user input and a button. 
 
 ```javascript
@@ -232,7 +234,7 @@ calculate_button.onClick(do_math) // Event listener to action a function on dete
 
 The code below will define the function do_math() which will be intended to apply band math to the currently displayed image. Additionally, the function will also have to remove the previous displayed band math layer if there is one. 
 
-```
+```javascript
 // Function to perform the band math
 function do_math(){
   
