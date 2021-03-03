@@ -120,3 +120,17 @@ var choose_location_selector = ui.Select({
 })
 ```
 
+Once the selector UI element is created, we will need to actually write some code to make it do something when the user changes the value of the selector box. We will need to use an event listener to check for changes in the selector box. Each UI element in Earth Engine has its own event listeners. More information can be found here: https://developers.google.com/earth-engine/guides/ui_events . We will be using an event listener called .onChange which is applied to the selector box. 
+
+### Making the Selector Box Work
+
+We will now add our event listener section.
+
+```javascript
+// Event Listenrs
+//---------------------------------------------------------------------
+
+// Detect changes in location selector box
+choose_location_selector.onChange(prepare_location) //The event listener is applied to our selector box and when triggered will call the function prepare location which we will make next.
+```
+
