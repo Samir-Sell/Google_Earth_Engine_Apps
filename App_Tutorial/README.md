@@ -52,3 +52,34 @@ var locations = {
   }
 }
 ```
+
+### Creating UI Elements
+
+The UI Documentation for Earth Engine can be found here under the code editor tab with methods starting with "ui.":https://developers.google.com/earth-engine/apidocs
+
+The first step will be to create a white panel where we can put all of our UI elements. We will use this panel to add things to like textboxes, buttons and drop down menus. 
+
+```
+// Create Side Panel for Control
+var side_panel = ui.Panel({
+   layout: ui.Panel.Layout.flow('vertical', true), // Make the elements in the panel flow vertically and to ensure it will wrap text if a text element is too long
+   style: { // Define the style of our panel
+      height: '90%', // Take up 90% of the users screen
+      width: '400px', // Make the panel 400 pixels of width 
+      position: "bottom-left"
+    }
+});
+```
+
+Next we create a label which allows us to display text.
+
+```
+// Create title label 
+var intro_label = ui.Label({
+  value: "Landsat-8 Band Math Calculator", // This is what the label will display 
+  style: {
+    stretch: "horizontal", // Stretch the label horizontally
+    fontWeight: "bold" // Depict the label as bold
+  }
+})
+```
