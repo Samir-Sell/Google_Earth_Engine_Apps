@@ -1,6 +1,6 @@
 # Google Earth Engine App Tutorial
 
-This tutorial will cover the basics of creating your own Earth Engine Apps. We will go through the process of creating a simple front-end with the Google Earth Engine Javascript API. A front-end will allow you to make no-code remote sensing solutions for for users who do not want to code or may be less Javascript savvy. In this tutorial, we will go through the process of creating a simplified version of the band math app that can be found the apps folder of this repository. 
+This tutorial will cover the basics of creating your own Earth Engine Apps. We will go through the process of creating a simple front-end with the Google Earth Engine Javascript API. A front-end will allow you to make no-code remote sensing solutions for for users who do not want to code or may be less Javascript savvy. In this tutorial, we will go through the process of creating a simplified version of the band math app that can be found in the apps folder of this repository. 
 
 ### Organization
 
@@ -11,6 +11,8 @@ I personally found it useful to divide my apps into different sections:
 - UI elements
 - Event listeners (Thse are functions that can "listen" for events such as a button being pushed, or the map being clicked. These functions can then activate another function known as a callback function)
 - Adding UI elements
+
+The scripts can become quite large and it helps to keep things organized so you can find them again easily. 
 
 ### Map Set Up and Global Variables
 
@@ -55,7 +57,7 @@ var locations = {
 
 ### Creating & Adding UI Elements
 
-The UI Documentation for Earth Engine can be found here under the code editor tab with methods starting with "ui.":https://developers.google.com/earth-engine/apidocs
+The UI Documentation for Earth Engine can be found here under the code editor tab with methods starting with "ui.": https://developers.google.com/earth-engine/apidocs
 
 The first step will be to create a UI Elements section and a white panel where we can put all of our UI elements. We will use this panel to add things to like textboxes, buttons and drop down menus. 
 
@@ -74,7 +76,7 @@ var side_panel = ui.Panel({
 });
 ```
 
-Next we create a label which allows us to display text.
+Next we create a label which allows us to display text on our panel.
 
 ```javascript
 // Create title label 
@@ -192,7 +194,7 @@ To complte the selector box, we just have to add it to the side panel. Navigate 
 side_panel.add(choose_location_label);
 ```
 
-Awesome! Run this and test that it works for you. We have a functional dropdown menu that can allow our users to switch aroud to view different images. We are going to want to add some functionality to our app. In this case, we are going to add some more labels and a textbox that will allow users to write their own band math equations. 
+Awesome! Run this and test that it works for you. We have a functional dropdown menu that can allow our users to switch around to view different images. We are going to want to add some functionality to our app. In this case, we are going to add some more labels and a textbox that will allow users to write their own band math equations to apply to the imagery. 
 
 ### Adding the Functional Band Math Textbox
 
@@ -226,7 +228,7 @@ side_panel.add(calculate_button);
 
 You have just added a new description label, a textbox for user input regarding band math equations and a button that will be used to action a calculation. To make the button do something, we have to add an event listener that will listen for the button being clicked. 
 
-Navigate to your event listner section and add. In the next step, we will be defining the function do_math(). 
+Navigate to your event listner section and add a .onClick event listener. In the next step, we will be defining the function do_math(). 
 
 ```javascript
 calculate_button.onClick(do_math) // Event listener to action a function on detection of a button click. 
