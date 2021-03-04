@@ -295,5 +295,15 @@ function do_math(){
 
 You should be able to run the program and have a functional band math calculator with a simple user interface. To publish your app, click the "Apps" button in the code editor page. Then click the "New App" button and choose a name and press "publish". The app will take a few minutes to come online and then you can navigate back to your "Apps" page and click on your live app. Voila! You have just made a simple functioning Google Earth Engine app. 
 
+### Other Tips
+
+It is important to heavily reference the UI documentation to be aware of all the various methods for each type of ui element. Many of these methods were used in this example app. I wanted to create a list of the ones I found important: 
+
+- ui_element.getValue(): The most important method and is the primary way to transfer input from the user to your back-end
+- ui_element.onChange(): Can be used to change display items in real time while the user plays around with your ui
+- ui_element.setValue(): Can be used to change the value of something such as a label or textbox
+- ui_element.setDisabled(): Important to use to disable ui elements that are not supposed to be useable yet, or should not be used at the current stage the user is in
+
+There are many more methods for each ui element. These are just the ones I found myself using a lot. I won't go into detail here, but the Map object has many important methods as well. When specifying rules for drawing tools, you will need to use event listeners and methods found in the ui.Map.DrawingTools to interact with the drawing toolbox itself and the geometry that can be generated from using the toolbox. It has event listeners such as .onLayerAdd, .onDraw and many more. Additionally, you can use it to disable certain parts of the toolbox and to even make your own drawing toolbox from scratch. For example, you can add a button that when clicked allows the user to draw a polygon. 
 
 
