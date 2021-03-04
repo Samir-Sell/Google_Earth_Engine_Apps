@@ -266,12 +266,34 @@ function do_math(){
           Map.layers().remove(layer); // Delete the layer with an index of 1
         }
       }
+     
+    // The next steps are dedicated to generating visualization parameters 
+     
+    // Grab the geometry to use region reductions
+    var geo = image.geometry()
+
+    // Calculate STD and Mean of index calculated and rename the keys to be used in viz
+    var mean_std_dev = calculation.reduceRegion({ // Run a reducer to calculate the mean and standard deviation
+            reducer: ee.Reducer.mean().combine({reducer2:ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true}), geometry: geo, scale: 30, bestEffort: true});
+    mean_std_dev = mean_std_dev.rename(mean_std_dev.keys(), ['mean1','stdDev1']) // Rename the keys so they make sense and so we can access them reliably
+  
+    // Function within a function to create min and max params  
+    mean_std_dev.evaluate(function(val){ // Please note the evaluate method in this line. It is used to asynchronously perform an action without freezing the rest of the program. 
+      var viz = {
+          min: val.mean1 - (val.stdDev1 * 3),
+          max: val.mean1 + (val.stdDev1 * 3),
+      };
     
-   // Call function to remove previous band math layer 
-   remove_previous_layers()
+     // Call function to remove previous band math layer 
+     remove_previous_layers()
+
+     // Add the calculation layer
+     Map.addLayer(calculation, viz, "Band Math Result");
+    })
+}
 ```
 
-
+You should be able to run the program and have a functional band math calculator with a simple user interface. 
 
 
 
