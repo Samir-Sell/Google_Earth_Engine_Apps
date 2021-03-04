@@ -1,5 +1,7 @@
 // A collection of handy Earth Engine functions to make life easier and shorten lengthy code bases
-
+// To use these you have to import the script 
+// var SC = require('users/samirsellars/shortcuts_library:sc');
+// Then you can call functions like SC.remove_first_geo() 
 
 // ------------------------------------------------------------------------------------------------
 
