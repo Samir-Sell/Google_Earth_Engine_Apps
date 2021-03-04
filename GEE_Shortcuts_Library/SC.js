@@ -1,12 +1,16 @@
 // A collection of handy Earth Engine functions to make life easier and shorten lengthy code bases
 
 
+// ------------------------------------------------------------------------------------------------
+
 // Function to remove the first geometry
 var remove_first_geo = function() {
   var layers = Map.drawingTools().layers();
   layers.get(0).geometries().remove(layers.get(0).geometries().get(0));
 }
 exports.remove_first_geo = remove_first_geo
+
+// ------------------------------------------------------------------------------------------------
 
 // Function to delete last drawn geoemtry
 function delete_last_geo(){
@@ -25,6 +29,8 @@ function remove_all_layers(){
 }
 exports.remove_all_layers = remove_all_layers
 
+// ------------------------------------------------------------------------------------------------
+
 // Function to clear all geoemtry (Not Layers)
 function clear_all_geometry() {
   while (drawing_tools.layers().length() > 0) { // Grab layers from geom list and get length
@@ -33,6 +39,8 @@ function clear_all_geometry() {
   }
 }
 exports.clear_all_geometry = clear_all_geometry
+
+// ------------------------------------------------------------------------------------------------
 
 // Function to parse year from a textbox in the format of (yyyy-mm-dd) and return the values in a iterable list
 // Requires the textbox as input
@@ -43,6 +51,8 @@ function parse_years(year_date_textbox) {
 }
 exports.parse_years = parse_years
 
+// ------------------------------------------------------------------------------------------------
+
 // Function to parse a range of months from a textbox in the format of (mm-mm) and return the values in a iterable list
 // Requires the textbox as input
 function parse_months(month_date_textbox) {
@@ -51,6 +61,8 @@ function parse_months(month_date_textbox) {
   return months_to_list;
 }
 exports.parse_months = parse_months
+
+// ------------------------------------------------------------------------------------------------
 
 // Function to cloud mask Sentinel-2 imagery
 // Requires the image as input
@@ -73,10 +85,7 @@ function sen_2_cloudless_mosaic_clip (image, aoi) {
 };
 exports.sen_2_cloudless_mosaic_clip = sen_2_cloudless_mosaic_clip
 
-
-
-
-
+// ------------------------------------------------------------------------------------------------
 
 // Function to calculate TWI using the flow accumulation 3 arc second dataset in EE
 // Requres a DEM as input and the resolution of the DEM
