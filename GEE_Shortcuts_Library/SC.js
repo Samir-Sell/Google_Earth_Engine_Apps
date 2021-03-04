@@ -22,6 +22,9 @@ function delete_last_geo(){
 }
 exports.delete_last_geo = delete_last_geo
 
+// ------------------------------------------------------------------------------------------------
+
+
 // Function to remove all layers (Not Geometry)
 function remove_all_layers(){
   while (Map.layers().length() > 0) { // Grab layers from geom list and get length
