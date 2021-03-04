@@ -306,4 +306,15 @@ It is important to heavily reference the UI documentation to be aware of all the
 
 There are many more methods for each ui element. These are just the ones I found myself using a lot. I won't go into detail here, but the Map object has many important methods as well. When specifying rules for drawing tools, you will need to use event listeners and methods found in the ui.Map.DrawingTools to interact with the drawing toolbox itself and the geometry that can be generated from using the toolbox. It has event listeners such as .onLayerAdd, .onDraw and many more. Additionally, you can use it to disable certain parts of the toolbox and to even make your own drawing toolbox from scratch. For example, you can add a button that when clicked allows the user to draw a polygon. 
 
+Good luck with your GEE app development! 
+
+### Links 
+
+To end off, here are some important links: 
+- https://developers.google.com/earth-engine/apidocs
+- https://developers.google.com/earth-engine/guides/ui_widgets
+- https://developers.google.com/earth-engine/guides/ui_events
+- https://developers.google.com/earth-engine/tutorials/community/drawing-tools
+- https://developers.google.com/earth-engine/guides/apps
+- https://developers.google.com/earth-engine/guides/ui_panels
 
