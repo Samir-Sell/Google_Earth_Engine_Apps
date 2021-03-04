@@ -293,7 +293,7 @@ function do_math(){
 }
 ```
 
-You should be able to run the program and have a functional band math calculator with a simple user interface. 
+You should be able to run the program and have a functional band math calculator with a simple user interface. To publish your app, click the "Apps" button in the code editor page. Then click the "New App" button and choose a name and press "publish". The app will take a few minutes to come online and then you can navigate back to your "Apps" page and click on your live app. Voila! You have just made a simple functioning Google Earth Engine app. 
 
 
 
